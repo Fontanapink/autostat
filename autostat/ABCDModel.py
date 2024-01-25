@@ -43,8 +43,7 @@ class ABCDModel:
 
         best_model_spec = self.best_kernel_info.model.to_spec()
 
-        # FIXME: inelegant to use __class__ here
-        self.model = self.best_kernel_info.model.__class__(
+        self.model = type(self.best_kernel_info.model)(
             best_model_spec,
             Dataset(
                 train_x=x_scaler.transform(x),
@@ -58,9 +57,12 @@ class ABCDModel:
 
     def predict(self, x):
         return self.model.predict(self.x_scaler.transform(x))
+    
+    def components(self):
+        return self.model.decomposition_data.components
 
     def list_components(self):
-        ...
-
+        return self.model.decomposition_data.components
+    
     def predict_component(self, component_num: int, x):
-        ...
+        return self.model.decomposition_data.components[component_num][1]
